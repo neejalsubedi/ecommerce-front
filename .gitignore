@@ -1,0 +1,30 @@
+# Dependency directories
+node_modules/
+dist/
+dist-ssr/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Local environment files
+.env
+.env.*.local
+
+# IDE/editor configs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+
+# Optional build cache
+.cache/
