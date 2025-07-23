@@ -8,6 +8,8 @@ import { useCart } from "../../cart/CartCXontext";
 import type { ProductType } from "../../types/ProductType";
 import { Button } from "../../ui/Button";
 import { Card } from "../../ui/Cards";
+import GenericModal from "../../ui/Modal";
+import ProductDetails from "./ProductDetails";
 
 const ProductsList = () => {
   const { state } = useLocation();
@@ -17,7 +19,9 @@ const ProductsList = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [stock, setStock] = useState<boolean>(true);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedSize, setSelectedSize] = useState<Record<string, string>>({});
 
   const categoryRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
@@ -53,7 +57,6 @@ const ProductsList = () => {
     return matchesSearch && matchesCategory;
   });
 
-  // Group all products by category (for second section)
   const groupedProducts: Record<string, typeof products> = {};
   products.forEach((product) => {
     const categoryName = product.category?.name || "Uncategorized";
@@ -69,7 +72,12 @@ const ProductsList = () => {
       navigate("/login");
       return;
     }
-    addToCart(product);
+    const size = selectedSize[product._id];
+    if (!size) {
+      toast.error("Please select a size before adding to cart");
+      return;
+    }
+    addToCart({ ...product,size:selectedSize[product._id] });
     toast.success(`${product.name} added to cart`);
   };
 
@@ -79,58 +87,94 @@ const ProductsList = () => {
       navigate("/login");
       return;
     }
-    addToCart(product);
+    const size = selectedSize[product._id];
+    if (!size) {
+      toast.error("Please select a size before adding to cart");
+      return;
+    }
+    addToCart({ ...product,size:selectedSize[product._id]  });
     setTimeout(() => navigate("/cart"), 200);
   };
 
-  useEffect(() => {
-    const outOfStock = products.some((product) => product.stock === 0);
-    setStock(!outOfStock);
-  }, [products]);
+  const renderCard = (product: ProductType) => {
+    const isOutOfStock = product.stock === 0;
 
-  const renderCard = (product: (typeof products)[number]) => (
-    <Card
-      key={product._id}
-      imageSrc={`${apiUrl}/uploads/${product.image}`}
-      renderContent={() => (
-        <>
-          <h4 className="text-lg font-semibold">{product.name}</h4>
-          <p className="text-sm text-gray-500">{product.category?.name}</p>
-          <p className="text-indigo-600 font-bold mb-2">Rs. {product.price}</p>
-          <p className="text-sm text-gray-500">
-            Stock:{" "}
-            <span className={`text-sm font-medium ${!stock?"text-red-500":"text-gray-500 "}`}>
-              {product.stock}
-            </span>
-          </p>
+    return (
+      <Card
+        key={product._id}
+        imageSrc={`${apiUrl}/uploads/${product.image}`}
+        // onClick={() => {
+        //   setIsModalOpen(true);
+        //   setSelectedId(product._id);
+        // }}
+        renderContent={() => (
+          <>
+            <div className="relative">
+              {isOutOfStock && (
+                <div className="absolute top-2 right-2 bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded">
+                  Out of Stock
+                </div>
+              )}
+            </div>
+            <h4 className="text-lg font-semibold">{product.name}</h4>
+            <p className="text-sm text-gray-500">{product.category?.name}</p>
+            <p className="text-indigo-600 font-bold mb-2">
+              Rs. {product.price}
+            </p>
+            <p className="text-sm text-gray-500">
+              Stock:
+              <span
+                className={`text-sm font-medium ${
+                  isOutOfStock ? "text-red-500" : "text-gray-500"
+                }`}
+              >
+                {product.stock}
+              </span>
+            </p>
+            {["S","M","X","XL","XXL","XXXL"]
+            .map((size) => (
+              <button
+                key={size}
+                type="button"
+                onClick={() =>
+                  setSelectedSize((prev) => ({ ...prev, [product._id]: size }))
+                }
+                disabled={isOutOfStock}
+                className={`px-4 py-2 rounded-md text-sm font-medium border transition 
+      ${
+        selectedSize[product._id] === size
+          ? "bg-blue-600 text-white border-blue-600"
+          : "bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300"
+      }`}
+              >
+                {size}
+              </button>
+            ))}
 
-          <div className="flex justify-between">
-            <Button
-              onClick={() => handleBuyNow(product)}
-              variant="secondary"
-                        className={`px-3 py-1 text-sm ${
-                !stock ? "bg-red-500 cursor-not-allowed hover:bg-red-500" : "bg-gray-300"
-              }`}
-              disabled={!stock}
-            >
-              Buy Now
-            </Button>
+            {!isOutOfStock && (
+              <div className="flex justify-between">
+                <Button
+                  onClick={() => handleBuyNow(product)}
+                  variant="secondary"
+                  className="px-3 py-1 text-sm bg-gray-300"
+                >
+                  Buy Now
+                </Button>
 
-            <Button
-              onClick={() => handleAddToCart(product)}
-              variant="primary"
-              className={`px-3 py-1 text-sm ${
-                !stock ? "bg-red-500 cursor-not-allowed hover:bg-red-500" : "bg-blue-500"
-              }`}
-              disabled={!stock}
-            >
-              Add to Cart
-            </Button>
-          </div>
-        </>
-      )}
-    />
-  );
+                <Button
+                  onClick={() => handleAddToCart(product)}
+                  variant="primary"
+                  className="px-3 py-1 text-sm bg-blue-500"
+                >
+                  Add to Cart
+                </Button>
+              </div>
+            )}
+          </>
+        )}
+      />
+    );
+  };
 
   return (
     <div className="p-6 max-w-screen-xl mx-auto">
@@ -198,6 +242,15 @@ const ProductsList = () => {
           </div>
         ))}
       </div>
+      <GenericModal
+        isOpen={isModalOpen}
+        toggleModal={() => {
+          setIsModalOpen(false);
+          setSelectedId(null);
+        }}
+      >
+        {selectedId && <ProductDetails id={selectedId} />}
+      </GenericModal>
     </div>
   );
 };

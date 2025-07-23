@@ -46,7 +46,7 @@ const cartCount = cartItems.length;
         <img
           src="logo.png"
           alt="Logo"
-          className="h-10 w-10 object-cover rounded"
+          className="bg-white h-10 w-10 object-cover rounded-4xl "
         />
         <span className="text-xl font-semibold">Nepali Luga</span>
       </Link>

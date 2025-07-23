@@ -73,6 +73,7 @@ function App() {
         { path: "add-category", element: <AddCategory /> },
         { path: "add-product", element: <AddProduct /> },
         {path:"products",element:<Products/>},
+        {path:"orders",element:<OrderList/>},
         {path:"edit-product/:id",element:<EditProduct/>},
         {index:true,element:<OrderList/>}
       ],

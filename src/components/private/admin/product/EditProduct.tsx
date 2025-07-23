@@ -1,9 +1,8 @@
-import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useApiGet } from "../../../../api/ApiGet";
 import { apiUrl } from "../../../../api/api";
-
 
 const EditProduct = () => {
   const { id } = useParams();
@@ -13,15 +12,15 @@ const EditProduct = () => {
     name: "",
     description: "",
     price: "",
-    stock:"",
+    stock: "",
     category: "",
-    
+
     image: null,
   });
 
   const { data: categories = [] } = useApiGet({
     queryKey: "categories",
-    endpoint: "/api/categories",
+    endpoint: "/api/categories/category",
   });
 
   useEffect(() => {
@@ -35,7 +34,7 @@ const EditProduct = () => {
             name: target.name,
             description: target.description,
             price: target.price,
-            stock:target.stock,
+            stock: target.stock,
             category: target.category?._id || "",
             image: null,
           });
@@ -57,8 +56,10 @@ const EditProduct = () => {
     form.append("name", formData.name);
     form.append("description", formData.description);
     form.append("price", formData.price);
-      form.append("stock", formData.stock);
+    form.append("stock", formData.stock);
     form.append("category", formData.category);
+    form.append("size", JSON.stringify(["S", "M", "XL","XXL","XXXL"]));
+
     if (formData.image) {
       form.append("image", formData.image);
     }
@@ -115,7 +116,7 @@ const EditProduct = () => {
           onChange={handleChange}
           className="w-full border px-4 py-2 rounded"
         />
-         <input
+        <input
           type="number"
           name="stock"
           value={formData.stock}
@@ -136,12 +137,24 @@ const EditProduct = () => {
             </option>
           ))}
         </select>
+        {product.image && (
+          <div className="mb-2">
+            <p className="text-sm text-gray-600 mb-1">Current Image:</p>
+            <img
+              src={`${apiUrl}/uploads/${product.image}`}
+              alt="Current product"
+              className="w-32 h-32 object-cover rounded"
+            />
+          </div>
+        )}
+
         <input
           type="file"
           name="image"
           onChange={handleChange}
           className="w-full border px-4 py-2 rounded"
         />
+
         <button
           type="submit"
           className="bg-indigo-600 text-white px-6 py-2 rounded"

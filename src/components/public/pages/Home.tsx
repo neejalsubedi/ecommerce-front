@@ -109,10 +109,9 @@ const Home = () => {
                 imageSrc={`http://localhost:5000/uploads/${product.image}`}
                 imageAlt={product.name}
                 showButton
-                buttonLabel="Add to Cart"
-                onButtonClick={() => {
-                  console.log("Add to cart:", product.name);
-                }}
+                buttonLabel="Shop Now"
+                onButtonClick={() =>navigate("/products")
+                }
               />
             ))}
           </div>

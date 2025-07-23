@@ -28,7 +28,7 @@ const OrderList = () => {
 
   const handleStatusChange = (orderId: string, newStatus: string) => {
     updateOrderStatus(
-      { path: `${orderId}/update-order-status`, body: { orderStatus: newStatus } },
+      { path: `/${orderId}/update-order-status`, body: { orderStatus: newStatus } },
       {
         onSuccess: () => {
           toast.success("Order status updated");
@@ -43,7 +43,7 @@ const OrderList = () => {
 
   const handlePaymentChange = (orderId: string, newPaymentStatus: string) => {
     updatePaymentStatus(
-      { path: `${orderId}/update-payment-status`, body: { paymentStatus: newPaymentStatus } },
+      { path: `/${orderId}/update-payment-status`, body: { paymentStatus: newPaymentStatus } },
       {
         onSuccess: () => {
           toast.success("Payment status updated");

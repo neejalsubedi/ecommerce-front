@@ -7,4 +7,7 @@ export interface ProductType {
   category: CategoryType[];
   price: number;
   image: FileList | string;
+  size:string
+
 }
+// export type Size = "S" | "M" | "XL" | "XXL" | "XXXL";

@@ -15,6 +15,7 @@ interface CardProps {
   onButtonClick?: () => void;
   buttonVariant?: "primary" | "secondary" | "outline";
   renderContent?: () => React.ReactNode;
+   onClick?: () => void;
 }
 
 export const Card: React.FC<CardProps> = ({
@@ -30,6 +31,8 @@ export const Card: React.FC<CardProps> = ({
   onButtonClick,
   buttonVariant = "primary",
   renderContent,
+  onClick
+
 }) => {
   return (
     <div
@@ -37,6 +40,7 @@ export const Card: React.FC<CardProps> = ({
         "bg-white rounded-xl overflow-hidden shadow-md transition hover:shadow-lg",
         cardClassName
       )}
+      onClick={onClick}
     >
       {imageSrc && <img src={imageSrc} alt={imageAlt} className={imageClassName} />}
 

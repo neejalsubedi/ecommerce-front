@@ -25,10 +25,10 @@ const Orders = () => {
   useEffect(() => {
     if (orders && Array.isArray(orders)) {
       const ongoing = orders.filter((o) =>
-        ["Processing", "On the Way"].includes(o.orderStatus)
+        ["Processing", "On the Way","Delivered"].includes(o.orderStatus)
       );
       const past = orders.filter((o) =>
-        ["Delivered", "Completed", "Cancelled"].includes(o.orderStatus)
+        [ "Completed", "Cancelled"].includes(o.orderStatus)
       );
       setOngoingOrders(ongoing);
       setPastOrders(past);

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useApiGet } from "../../../../api/ApiGet";
@@ -12,6 +13,7 @@ const Products = () => {
   });
 
   const { mutate: deleteProduct } = useApiMutation("delete", "/api/products");
+  const [stock, setStock] = useState<boolean>(true);
 
   const handleDelete = (id: string) => {
     if (confirm("Are you sure you want to delete this product?")) {
@@ -26,7 +28,10 @@ const Products = () => {
       });
     }
   };
-
+  useEffect(() => {
+    const outOfStock = products.some((product) => product.stock === 0);
+    setStock(!outOfStock);
+  }, [products]);
   return (
     <div className="p-6">
       <h2 className="text-3xl font-bold mb-6">Products</h2>
@@ -44,6 +49,13 @@ const Products = () => {
                 alt={product.name}
                 className="w-full h-48 object-cover p-2"
               />
+              <div className="relative">
+                {!stock && (
+                  <div className="absolute top-2 right-2 bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded">
+                    Out of Stock
+                  </div>
+                )}
+              </div>
               <div className="p-4">
                 <h3 className="text-xl font-semibold">{product.name}</h3>
                 <p className="text-gray-500 mt-1">
@@ -51,6 +63,16 @@ const Products = () => {
                 </p>
                 <p className="text-indigo-600 font-bold mt-2">
                   Rs. {product.price}
+                </p>
+                <p className="text-sm text-gray-500">
+                  Stock:
+                  <span
+                    className={`text-sm font-medium ${
+                      stock! ? "text-red-500" : "text-gray-500 "
+                    }`}
+                  >
+                    {product.stock}
+                  </span>
                 </p>
 
                 <div className="flex justify-between mt-4">
