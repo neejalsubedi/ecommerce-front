@@ -40,11 +40,11 @@ export const Card: React.FC<CardProps> = ({
         "bg-white rounded-xl overflow-hidden shadow-md transition hover:shadow-lg",
         cardClassName
       )}
-      onClick={onClick}
+   
     >
-      {imageSrc && <img src={imageSrc} alt={imageAlt} className={imageClassName} />}
+      {imageSrc && <img src={imageSrc} alt={imageAlt} className={imageClassName}  onClick={onClick} />}
 
-      <div className={cn("p-4 space-y-2", contentClassName)}>
+      <div className={cn("p-4 space-y-2", contentClassName)}   >
         {renderContent ? (
           renderContent()
         ) : (

@@ -103,10 +103,10 @@ const ProductsList = () => {
       <Card
         key={product._id}
         imageSrc={`${apiUrl}/uploads/${product.image}`}
-        // onClick={() => {
-        //   setIsModalOpen(true);
-        //   setSelectedId(product._id);
-        // }}
+        onClick={() => {
+          setIsModalOpen(true);
+          setSelectedId(product._id);
+        }}
         renderContent={() => (
           <>
             <div className="relative">
