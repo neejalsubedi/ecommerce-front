@@ -114,6 +114,7 @@ const OrderList = () => {
               </div>
               <div className="mb-2"><strong>Total:</strong> Rs. {order.totalPrice}</div>
               <div className="mb-2"><strong>Payment:</strong> {order.paymentMethod}</div>
+                     <div className="mb-2"><strong>Size:</strong> {order.size}</div>
               <div className="mb-4 text-sm text-gray-600">
                 Placed: {new Date(order.createdAt).toLocaleString()}
               </div>

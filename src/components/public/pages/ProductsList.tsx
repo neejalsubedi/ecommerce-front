@@ -77,7 +77,7 @@ const ProductsList = () => {
       toast.error("Please select a size before adding to cart");
       return;
     }
-    addToCart({ ...product,size:selectedSize[product._id] });
+    addToCart({ ...product, size: selectedSize[product._id] });
     toast.success(`${product.name} added to cart`);
   };
 
@@ -92,7 +92,7 @@ const ProductsList = () => {
       toast.error("Please select a size before adding to cart");
       return;
     }
-    addToCart({ ...product,size:selectedSize[product._id]  });
+    addToCart({ ...product, size: selectedSize[product._id] });
     setTimeout(() => navigate("/cart"), 200);
   };
 
@@ -131,25 +131,29 @@ const ProductsList = () => {
                 {product.stock}
               </span>
             </p>
-            {["S","M","X","XL","XXL","XXXL"]
-            .map((size) => (
-              <button
-                key={size}
-                type="button"
-                onClick={() =>
-                  setSelectedSize((prev) => ({ ...prev, [product._id]: size }))
-                }
-                disabled={isOutOfStock}
-                className={`px-4 py-2 rounded-md text-sm font-medium border transition 
+            <div className="flex flex-wrap gap-3">
+              {["S", "M", "X", "XL", "XXL", "XXXL"].map((size) => (
+                <button
+                  key={size}
+                  type="button"
+                  onClick={() =>
+                    setSelectedSize((prev) => ({
+                      ...prev,
+                      [product._id]: size,
+                    }))
+                  }
+                  disabled={isOutOfStock}
+                  className={`px-4 py-2 rounded-md text-sm font-medium border transition 
       ${
         selectedSize[product._id] === size
           ? "bg-blue-600 text-white border-blue-600"
           : "bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300"
       }`}
-              >
-                {size}
-              </button>
-            ))}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
 
             {!isOutOfStock && (
               <div className="flex justify-between">

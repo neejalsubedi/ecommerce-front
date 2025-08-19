@@ -7,10 +7,12 @@ import { useCart } from "../../cart/CartCXontext";
 import type { ProductType } from "../../types/ProductType";
 import { Card } from "../../ui/Cards";
 import { Button } from "../../ui/Button";
+import { useState } from "react";
 
 const ProductDetails = ({ id }: { id: string }) => {
   const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
+    const [selectedSize, setSelectedSize] = useState<Record<string, string>>({});
   const navigate = useNavigate();
   // const { id } = useParams();
   const { data: product, isLoading } = useApiGet<ProductType>({
@@ -26,7 +28,12 @@ const ProductDetails = ({ id }: { id: string }) => {
       navigate("/login");
       return;
     }
-    addToCart(product);
+ const size = selectedSize[product._id];
+    if (!size) {
+      toast.error("Please select a size before adding to cart");
+      return;
+    }
+    addToCart({ ...product, size: selectedSize[product._id] });
     toast.success(`${product.name} added to cart`);
   };
 
@@ -36,7 +43,12 @@ const ProductDetails = ({ id }: { id: string }) => {
       navigate("/login");
       return;
     }
-    addToCart(product);
+ const size = selectedSize[product._id];
+    if (!size) {
+      toast.error("Please select a size before adding to cart");
+      return;
+    }
+    addToCart({ ...product, size: selectedSize[product._id] });
     setTimeout(() => navigate("/cart"), 200);
   };
     const isOutOfStock = product.stock === 0;
@@ -74,6 +86,29 @@ const ProductDetails = ({ id }: { id: string }) => {
             Rs. {product.price}
           </p>
           <p>{product.description}</p>
+           <div className="flex flex-wrap gap-3">
+              {["S", "M", "X", "XL", "XXL", "XXXL"].map((size) => (
+                <button
+                  key={size}
+                  type="button"
+                  onClick={() =>
+                    setSelectedSize((prev) => ({
+                      ...prev,
+                      [product._id]: size,
+                    }))
+                  }
+                  disabled={isOutOfStock}
+                  className={`px-4 py-2 rounded-md text-sm font-medium border transition 
+      ${
+        selectedSize[product._id] === size
+          ? "bg-blue-600 text-white border-blue-600"
+          : "bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300"
+      }`}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
           {!isOutOfStock && (
               <div className="flex justify-between">
                 <Button

@@ -73,10 +73,11 @@ const cartCount = cartItems.length;
         {/* Categories Dropdown */}
         <div
           className="relative"
-          onMouseEnter={() => setDropdownOpen(true)}
-          onMouseLeave={() => setDropdownOpen(false)}
+         
         >
-          <button className="flex items-center gap-1 px-3 py-2 rounded hover:bg-white hover:text-indigo-600">
+         <div  onMouseEnter={() => setDropdownOpen(true)}
+          onMouseLeave={() => setDropdownOpen(false)} >
+           <button className="flex items-center gap-1 px-3 py-2 rounded hover:bg-white hover:text-indigo-600">
             <MdCategory />
             <span>Categories</span>
           </button>
@@ -94,6 +95,7 @@ const cartCount = cartItems.length;
               ))}
             </div>
           )}
+         </div>
         </div>
       </nav>
 

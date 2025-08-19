@@ -11,6 +11,7 @@ const PrivateRoute = ({
 }) => {
   const { isAuthenticated, user } = useAuth();
   const role = user?.role; // ✅ fix here
+  console.log("is authi=neticated1",isAuthenticated)
 
   if (!isAuthenticated) {
     return <Navigate to="/" />;

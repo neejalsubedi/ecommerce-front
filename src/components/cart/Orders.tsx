@@ -20,21 +20,25 @@ const Orders = () => {
     endpoint: "/api/Orders/my-orders",
     enabled: isAuthenticated, // only fetch if logged in
   });
-  const { mutate: cancelOrder } = useApiMutation("put", "/api/Orders/","my-orders");
+  const { mutate: cancelOrder } = useApiMutation(
+    "put",
+    "/api/Orders/",
+    "my-orders"
+  );
 
   useEffect(() => {
     if (orders && Array.isArray(orders)) {
       const ongoing = orders.filter((o) =>
-        ["Processing", "On the Way","Delivered"].includes(o.orderStatus)
+        ["Processing", "On the Way", "Delivered"].includes(o.orderStatus)
       );
       const past = orders.filter((o) =>
-        [ "Completed", "Cancelled"].includes(o.orderStatus)
+        ["Completed", "Cancelled"].includes(o.orderStatus)
       );
       setOngoingOrders(ongoing);
       setPastOrders(past);
     }
   }, [orders]);
-  const handleCancelOrder = async(orderId: string) => {
+  const handleCancelOrder = async (orderId: string) => {
     cancelOrder(`${orderId}/cancel`, {
       onSuccess: () => {
         toast.success("Order cancelled successfully");
@@ -108,6 +112,8 @@ const Orders = () => {
                 <span>
                   {item.name} × {item.quantity} — Rs.{" "}
                   {item.price * item.quantity}
+                  <span> Size:</span>
+                  <span className="text-gray-600 font-bold"> {item.size}</span>
                 </span>
               </div>
             </li>

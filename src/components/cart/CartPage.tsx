@@ -116,12 +116,12 @@ const CartPage = () => {
 
         const data = await res.json();
 
-        if (res.ok && data.payment_url && data.tempOrder && data.pidx) {
+        if (res.ok && data.payment_url && data.tempOrder) {
           localStorage.setItem(
             "khalti_temp_order",
             JSON.stringify(data.tempOrder)
           );
-          localStorage.setItem("khalti_pidx", data.pidx);
+          // localStorage.setItem("khalti_pidx", data.pidx);
           clearCart();
           window.location.href = data.payment_url;
         } else {
