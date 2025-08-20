@@ -38,8 +38,8 @@ const Register = () => {
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
+    // setValue,
+    // watch,
     formState: { errors },
   } = useForm<RegisterFormValues>();
 
@@ -47,13 +47,13 @@ const Register = () => {
     endpoint: "/api/roles/role",
     queryKey: "ROLES",
   });
-const roleOptions=roles?.roles.map((role)=>({
-  label:role.key,
-  value:role.value
-}))
+// const roleOptions=roles?.roles.map((role)=>({
+//   label:role.key,
+//   value:role.value
+// }))
 console.log(roles)
 
-  const selectedRole = watch("role");
+  // const selectedRole = watch("role");
 
   const { mutate: createUser } = useApiMutation("post", "/api/auth/register");
 
@@ -165,7 +165,7 @@ console.log(roles)
                 register={register}
                 error={errors.role?.message}
               /> */}
-              <FormInput
+              {/* <FormInput
                 labelText="Role"
                 labelFor="role"
                 id="role"
@@ -179,12 +179,11 @@ console.log(roles)
                 register={register}
                 error={errors.role?.message}
                 
-              />
+              /> */}
               <Button
-                text="Register"
+                
                 type="submit"
-                className="w-full justify-center text-white bg-[#1056AB] hover:bg-[#3F7ECC] cursor-pointer rounded-xl py-3 mt-2"
-              />
+                className="w-full justify-center text-white bg-[#1056AB] hover:bg-[#3F7ECC] cursor-pointer rounded-xl py-3 mt-2" children={"Register"}             />
             </form>
             <p className="mt-4 text-center">
               Already have account?{" "}

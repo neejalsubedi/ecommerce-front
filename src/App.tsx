@@ -11,7 +11,7 @@ import ProductsList from "./components/public/pages/ProductsList";
 import PrivateRoute from "./components/PrivateRoute";
 import { CartProvider } from "./components/cart/CartCXontext";
 import CartPage from "./components/cart/CartPage";
-import Dashboard from "./components/private/admin/dashboard/Dashboard";
+
 import AddProduct from "./components/private/admin/product/AddProduct";
 import PrivateLayout from "./components/private/layout/PrivateLayout";
 import Login from "./components/public/pages/Login";

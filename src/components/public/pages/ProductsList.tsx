@@ -33,7 +33,11 @@ const ProductsList = () => {
   const allCategories = [
     "All",
     ...Array.from(
-      new Set(products.map((p) => p.category?.name).filter(Boolean))
+      new Set(
+        products
+          .map((p) => p.category?.name)
+          .filter((name): name is string => Boolean(name)) // type guard
+      )
     ),
   ];
 
@@ -57,9 +61,9 @@ const ProductsList = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const groupedProducts: Record<string, typeof products> = {};
+  const groupedProducts: Record<string, ProductType[]> = {};
   products.forEach((product) => {
-    const categoryName = product.category?.name || "Uncategorized";
+    const categoryName = product.category?.name ?? "Uncategorized";
     if (!groupedProducts[categoryName]) {
       groupedProducts[categoryName] = [];
     }
@@ -72,12 +76,13 @@ const ProductsList = () => {
       navigate("/login");
       return;
     }
-    const size = selectedSize[product._id];
+    const id = product._id ?? "unknown"; // fallback
+    const size = selectedSize[id];
     if (!size) {
       toast.error("Please select a size before adding to cart");
       return;
     }
-    addToCart({ ...product, size: selectedSize[product._id] });
+    addToCart({ ...product, size });
     toast.success(`${product.name} added to cart`);
   };
 
@@ -87,25 +92,28 @@ const ProductsList = () => {
       navigate("/login");
       return;
     }
-    const size = selectedSize[product._id];
+    const id = product._id ?? "unknown";
+    const size = selectedSize[id];
     if (!size) {
       toast.error("Please select a size before adding to cart");
       return;
     }
-    addToCart({ ...product, size: selectedSize[product._id] });
+    addToCart({ ...product, size });
     setTimeout(() => navigate("/cart"), 200);
   };
 
   const renderCard = (product: ProductType) => {
     const isOutOfStock = product.stock === 0;
+    const categoryName = product.category?.name ?? "Uncategorized";
+    const productId = product._id ?? "unknown";
 
     return (
       <Card
-        key={product._id}
+        key={productId}
         imageSrc={`${apiUrl}/uploads/${product.image}`}
         onClick={() => {
           setIsModalOpen(true);
-          setSelectedId(product._id);
+          setSelectedId(productId);
         }}
         renderContent={() => (
           <>
@@ -117,10 +125,8 @@ const ProductsList = () => {
               )}
             </div>
             <h4 className="text-lg font-semibold">{product.name}</h4>
-            <p className="text-sm text-gray-500">{product.category?.name}</p>
-            <p className="text-indigo-600 font-bold mb-2">
-              Rs. {product.price}
-            </p>
+            <p className="text-sm text-gray-500">{categoryName}</p>
+            <p className="text-indigo-600 font-bold mb-2">Rs. {product.price}</p>
             <p className="text-sm text-gray-500">
               Stock:
               <span
@@ -139,16 +145,15 @@ const ProductsList = () => {
                   onClick={() =>
                     setSelectedSize((prev) => ({
                       ...prev,
-                      [product._id]: size,
+                      [productId]: size,
                     }))
                   }
                   disabled={isOutOfStock}
-                  className={`px-4 py-2 rounded-md text-sm font-medium border transition 
-      ${
-        selectedSize[product._id] === size
-          ? "bg-blue-600 text-white border-blue-600"
-          : "bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300"
-      }`}
+                  className={`px-4 py-2 rounded-md text-sm font-medium border transition ${
+                    selectedSize[productId] === size
+                      ? "bg-blue-600 text-white border-blue-600"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-300"
+                  }`}
                 >
                   {size}
                 </button>
@@ -156,7 +161,7 @@ const ProductsList = () => {
             </div>
 
             {!isOutOfStock && (
-              <div className="flex justify-between">
+              <div className="flex justify-between mt-2">
                 <Button
                   onClick={() => handleBuyNow(product)}
                   variant="secondary"
@@ -164,7 +169,6 @@ const ProductsList = () => {
                 >
                   Buy Now
                 </Button>
-
                 <Button
                   onClick={() => handleAddToCart(product)}
                   variant="primary"
@@ -193,7 +197,6 @@ const ProductsList = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-
         <select
           className="bg-white w-full sm:w-1/4 border border-gray-300 p-2 rounded-md"
           value={selectedCategory}
@@ -207,7 +210,7 @@ const ProductsList = () => {
         </select>
       </div>
 
-      {/* Show all filtered products in a flat grid */}
+      {/* Filtered Products */}
       <div>
         <h3 className="text-2xl font-semibold mb-6 text-indigo-700">
           {selectedCategory === "All"
@@ -223,10 +226,8 @@ const ProductsList = () => {
         )}
       </div>
 
-      {/* Separator */}
+      {/* Products by Category */}
       <hr className="my-12 border-gray-300" />
-
-      {/* Show all products grouped by category with headings */}
       <div>
         <h3 className="text-2xl font-semibold mb-6 text-indigo-700">
           Products by Category
@@ -246,6 +247,7 @@ const ProductsList = () => {
           </div>
         ))}
       </div>
+
       <GenericModal
         isOpen={isModalOpen}
         toggleModal={() => {

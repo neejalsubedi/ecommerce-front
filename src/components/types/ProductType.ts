@@ -1,10 +1,12 @@
-import type { CategoryType } from "./CategoryType";
+
 
 export interface ProductType {
+    _id?: string;
   stock: number;
   name: string;
   description: string;
-  category: CategoryType[];
+category?: { name: string } | null
+
   price: number;
   image: FileList | string;
   size:string

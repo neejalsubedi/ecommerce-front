@@ -1,34 +1,37 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState,  } from "react";
 import { MdShoppingCart } from "react-icons/md";
-import { Button } from "../../ui/Button";
-import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useApiGet } from "../../../api/ApiGet";
 import type { ProductType } from "../../types/ProductType";
+import { Button } from "../../ui/Button";
 import { Card } from "../../ui/Cards";
-import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const { data: products = [] } = useApiGet<ProductType[]>({
-    endpoint: "api/products/product",
+    endpoint: "/api/products/product",
     queryKey: "products",
   });
 
   const navigate = useNavigate();
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState<string>("");
   const [suggestions, setSuggestions] = useState<ProductType[]>([]);
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearch(value);
+const handleSearchChange = (e:any) => {
+  const value = e.target.value;
+  setSearch(value);
 
-    if (value.length === 0) {
-      setSuggestions([]);
-    } else {
-      const filtered = products.filter((product) =>
-        product.name.toLowerCase().includes(value.toLowerCase())
-      );
-      setSuggestions(filtered.slice(0, 5));
-    }
-  };
+  if (!value.trim()) {
+    setSuggestions([]);
+  } else {
+    const filtered = products.filter((product) =>
+      product.name.toLowerCase().includes(value.toLowerCase())
+    );
+    setSuggestions(filtered.slice(0, 5));
+  }
+};
+
+
 
   const handleSearchSubmit = () => {
     const filtered = products.filter((product) =>
@@ -52,7 +55,8 @@ const Home = () => {
               Elevate Your Wardrobe Today
             </h2>
             <p className="text-lg mb-6 text-gray-700">
-              Discover premium fashion pieces for every style. Tailored for trendsetters and everyday icons.
+              Discover premium fashion pieces for every style. Tailored for
+              trendsetters and everyday icons.
             </p>
             <div className="mb-2 relative">
               <input
@@ -69,26 +73,33 @@ const Home = () => {
                       <li
                         key={product._id}
                         className="px-4 py-2 hover:bg-indigo-100 cursor-pointer text-sm"
-                        onClick={() => {
-                          navigate(`/products?search=${encodeURIComponent(product.name)}`);
-                        }}
+                        onClick={() =>
+                          navigate(
+                            `/products?search=${encodeURIComponent(product.name)}`
+                          )
+                        }
                       >
                         {product.name}
                       </li>
                     ))
                   ) : (
-                    <li className="px-4 py-2 text-gray-500 text-sm">No products found</li>
+                    <li className="px-4 py-2 text-gray-500 text-sm">
+                      No products found
+                    </li>
                   )}
                 </ul>
               )}
             </div>
-            <Button onClick={handleSearchSubmit} className="text-lg flex items-center gap-2 mt-2">
+            <Button
+              onClick={handleSearchSubmit}
+              className="text-lg flex items-center gap-2 mt-2"
+            >
               <MdShoppingCart /> Shop Now
             </Button>
           </div>
           <div>
             <img
-              src="../../../../public/clothes-laptop-bed-arrangement-high-angle.jpg"
+              src="/clothes-laptop-bed-arrangement-high-angle.jpg"
               alt="Fashion Collection"
               className="w-full h-auto rounded-2xl shadow-lg object-cover"
             />
@@ -110,8 +121,7 @@ const Home = () => {
                 imageAlt={product.name}
                 showButton
                 buttonLabel="Shop Now"
-                onButtonClick={() =>navigate("/products")
-                }
+                onButtonClick={() => navigate("/products")}
               />
             ))}
           </div>
@@ -120,23 +130,23 @@ const Home = () => {
         {/* Why Choose Us */}
         <section className="bg-indigo-50 p-6 md:p-12 rounded-xl">
           <h3 className="text-2xl font-semibold mb-6 text-center text-indigo-800">
-            Why Choose CampusCart?
+            Why Choose Nepali Luga?
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 text-center">
             {[
               {
                 title: "Premium Quality",
-                image: "../../../../public/premium-quality-golden-design-badge-collection-vector.jpg",
+                image: "/premium-quality-golden-design-badge-collection-vector.jpg",
                 text: "Curated fabrics and lasting styles.",
               },
               {
                 title: "Express Shipping",
-                image: "../../../../public/istockphoto-849921508-612x612.jpg",
+                image: "/istockphoto-849921508-612x612.jpg",
                 text: "Fast delivery across the country.",
               },
               {
                 title: "Varieties",
-                image: "../../../../public/images (2).jpg",
+                image: "/images (2).jpg",
                 text: "Easy returns within 7 days of delivery.",
               },
             ].map((feature, i) => (

@@ -1,13 +1,11 @@
-import { JSX } from "react";
+import type { JSX } from "react";
 import { AiOutlineProduct } from "react-icons/ai";
-import { FaUsers, FaUsersLine } from "react-icons/fa6";
+
 import {
   MdInventory2,
-  MdMoreTime,
+
   MdOutlineLogout,
-  MdPointOfSale,
-  MdSettings,
-  MdTableRestaurant,
+ 
 } from "react-icons/md";
 import { TbReportAnalytics } from "react-icons/tb";
 import { Link, NavLink, useNavigate } from "react-router-dom";

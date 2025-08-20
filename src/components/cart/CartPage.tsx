@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -127,8 +128,8 @@ const CartPage = () => {
         } else {
           throw new Error(data.message || "Khalti payment initiation failed");
         }
-      } catch (error) {
-        toast.error("Khalti payment initiation failed");
+      } catch (error:any) {
+        toast.error("Khalti payment initiation failed",error);
       }
     }
   };
@@ -158,14 +159,14 @@ const CartPage = () => {
                     <div className="flex flex-col">
                       <div className="flex items-center gap-2">
                         <button
-                          onClick={() => decreaseQuantity(item._id)}
+                          onClick={() => decreaseQuantity(item._id as string)}
                           className="px-2 py-1 bg-gray-200 rounded"
                         >
                           -
                         </button>
                         <span>{item.quantity}</span>
                         <button
-                          onClick={() => increaseQuantity(item._id)}
+                          onClick={() => increaseQuantity(item._id as string)}
                           disabled={item.quantity === item.stock}
                           className={`px-2 py-1 rounded ${
                             item.quantity === item.stock
@@ -200,7 +201,7 @@ const CartPage = () => {
                     Rs. {item.price * item.quantity}
                   </p>
                   <button
-                    onClick={() => removeFromCart(item._id)}
+                    onClick={() => removeFromCart(item._id as string)}
                     className="text-red-500 text-sm hover:underline"
                   >
                     Remove

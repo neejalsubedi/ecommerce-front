@@ -1,64 +1,104 @@
-import { useEffect, useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState, } from "react";
+import type {ChangeEvent, FormEvent } from "react"
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useApiGet } from "../../../../api/ApiGet";
 import { apiUrl } from "../../../../api/api";
 
+// ✅ Define types
+interface Category {
+  _id: string;
+  name: string;
+}
+
+interface Product {
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  category?: Category;
+  image?: string;
+}
+
+interface FormDataState {
+  name: string;
+  description: string;
+  price: string;
+  stock: string;
+  category: string;
+  image: File | null;
+}
+
 const EditProduct = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [product, setProduct] = useState(null);
-  const [formData, setFormData] = useState({
+
+  const [product, setProduct] = useState<Product | null>(null);
+  const [formData, setFormData] = useState<FormDataState>({
     name: "",
     description: "",
     price: "",
     stock: "",
     category: "",
-
     image: null,
   });
 
-  const { data: categories = [] } = useApiGet({
+  const { data: categories = [] } = useApiGet<Category[]>({
     queryKey: "categories",
     endpoint: "/api/categories/category",
   });
 
+  // Fetch product by ID
   useEffect(() => {
-    fetch(`${apiUrl}/api/products/product`)
-      .then((res) => res.json())
-      .then((data) => {
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(`${apiUrl}/api/products/product`);
+        const data: Product[] = await res.json();
         const target = data.find((p) => p._id === id);
-        setProduct(target);
+        setProduct(target || null);
+
         if (target) {
           setFormData({
             name: target.name,
             description: target.description,
-            price: target.price,
-            stock: target.stock,
+            price: target.price.toString(),
+            stock: target.stock.toString(),
             category: target.category?._id || "",
             image: null,
           });
         }
-      });
+      } catch (err:any) {
+        toast.error("Failed to fetch product",err);
+      }
+    };
+
+    fetchProduct();
   }, [id]);
 
-  const handleChange = (e) => {
-    if (e.target.name === "image") {
-      setFormData({ ...formData, image: e.target.files[0] });
+  // Handle form field changes
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, files } = e.target as HTMLInputElement;
+    if (name === "image" && files) {
+      setFormData({ ...formData, image: files[0] });
     } else {
-      setFormData({ ...formData, [e.target.name]: e.target.value });
+      setFormData({ ...formData, [name]: value });
     }
   };
 
-  const handleSubmit = async (e) => {
+  // Handle form submission
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!id) return;
+
     const form = new FormData();
     form.append("name", formData.name);
     form.append("description", formData.description);
     form.append("price", formData.price);
     form.append("stock", formData.stock);
     form.append("category", formData.category);
-    form.append("size", JSON.stringify(["S", "M", "XL","XXL","XXXL"]));
+    form.append("size", JSON.stringify(["S", "M", "XL", "XXL", "XXXL"]));
 
     if (formData.image) {
       form.append("image", formData.image);
@@ -82,8 +122,8 @@ const EditProduct = () => {
       } else {
         throw new Error(data.message);
       }
-    } catch (err) {
-      toast.error("Failed to update product");
+    } catch (err:any) {
+      toast.error("Failed to update product",err);
     }
   };
 
@@ -147,18 +187,13 @@ const EditProduct = () => {
             />
           </div>
         )}
-
         <input
           type="file"
           name="image"
           onChange={handleChange}
           className="w-full border px-4 py-2 rounded"
         />
-
-        <button
-          type="submit"
-          className="bg-indigo-600 text-white px-6 py-2 rounded"
-        >
+        <button type="submit" className="bg-indigo-600 text-white px-6 py-2 rounded">
           Update Product
         </button>
       </form>

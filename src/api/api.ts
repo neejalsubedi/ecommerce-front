@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const apiUrl = "http://localhost:5000";
+export const apiUrl = "https://shopbackend.primosremit.com.au";
 
 export const apiService = axios.create({
   baseURL: apiUrl,
