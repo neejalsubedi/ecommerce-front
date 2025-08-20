@@ -25,7 +25,7 @@ export interface RegisterFormValues {
   phone: string;
   email: string;
   password: string;
-  // confirmPassword: string;
+  address:string;
   role?: string;
 }
 
@@ -47,11 +47,11 @@ const Register = () => {
     endpoint: "/api/roles/role",
     queryKey: "ROLES",
   });
-// const roleOptions=roles?.roles.map((role)=>({
-//   label:role.key,
-//   value:role.value
-// }))
-console.log(roles)
+  // const roleOptions=roles?.roles.map((role)=>({
+  //   label:role.key,
+  //   value:role.value
+  // }))
+  console.log(roles);
 
   // const selectedRole = watch("role");
 
@@ -139,6 +139,15 @@ console.log(roles)
                 error={errors.phone?.message}
               />
               <FormInput
+                labelText="Address"
+                labelFor="address"
+                id="address"
+                name="address"
+                type="text"
+                register={register}
+                error={errors.address?.message}
+              />
+              <FormInput
                 labelText="Password"
                 labelFor="password"
                 id="password"
@@ -181,9 +190,10 @@ console.log(roles)
                 
               /> */}
               <Button
-                
                 type="submit"
-                className="w-full justify-center text-white bg-[#1056AB] hover:bg-[#3F7ECC] cursor-pointer rounded-xl py-3 mt-2" children={"Register"}             />
+                className="w-full justify-center text-white bg-[#1056AB] hover:bg-[#3F7ECC] cursor-pointer rounded-xl py-3 mt-2"
+                children={"Register"}
+              />
             </form>
             <p className="mt-4 text-center">
               Already have account?{" "}

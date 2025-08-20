@@ -6,6 +6,7 @@ import { useApiGet } from "../../../api/ApiGet";
 import type { ProductType } from "../../types/ProductType";
 import { Button } from "../../ui/Button";
 import { Card } from "../../ui/Cards";
+import { apiUrl } from "../../../api/api";
 
 const Home = () => {
   const { data: products = [] } = useApiGet<ProductType[]>({
@@ -117,7 +118,7 @@ const handleSearchChange = (e:any) => {
                 key={product._id}
                 title={product.name}
                 description={product.description}
-                imageSrc={`http://localhost:5000/uploads/${product.image}`}
+                imageSrc={`${apiUrl}/uploads/${product.image}`}
                 imageAlt={product.name}
                 showButton
                 buttonLabel="Shop Now"
