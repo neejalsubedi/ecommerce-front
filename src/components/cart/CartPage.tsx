@@ -82,7 +82,7 @@ const CartPage = () => {
       items: cartItems.map((item) => ({
         productId: item._id,
         quantity: item.quantity,
-        size:item.size
+        size: item.size,
       })),
       deliveryInfo,
     };
@@ -104,7 +104,7 @@ const CartPage = () => {
     } else {
       try {
         const res = await fetch(
-          "http://localhost:5000/api/orders/khalti/initiate",
+          "https://shopbackend.primosremit.com.au/api/orders/khalti/initiate",
           {
             method: "POST",
             headers: {
@@ -128,8 +128,8 @@ const CartPage = () => {
         } else {
           throw new Error(data.message || "Khalti payment initiation failed");
         }
-      } catch (error:any) {
-        toast.error("Khalti payment initiation failed",error);
+      } catch (error: any) {
+        toast.error("Khalti payment initiation failed", error);
       }
     }
   };
